@@ -71,7 +71,7 @@ function createAutoCompleteFields() {
             },
             placeholder: '',
             allowClear: true,
-            minimumInputLength: 1
+            minimumInputLength: 0
         });
     });
 }
