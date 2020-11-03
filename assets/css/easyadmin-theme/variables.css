@@ -7,23 +7,33 @@
  --------------------------------------------------------------------------- */
 :root {
     --body-max-width: 1440px;
-    --sidebar-width: 200px;
+    --sidebar-max-width: 190px;
 
     --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
     --font-size-base: 0.875rem; /* 14px */
+    --font-size-xl: 1.125rem; /* 18px */
     --font-size-lg: 1rem; /* 16px */
     --font-size-sm: 0.8125rem; /* 13px */
+    --font-size-xs: 0.75rem; /* 12px */
 
     --body-bg: hsl(220, 20%, 91%);
     --text-color: hsl(225, 15%, 35%);
     --text-color-dark: hsl(229, 24%, 21%);
     --text-color-light: hsl(215, 14%, 67%);
     --box-shadow-lg: 0 7px 14px 0 hsla(231, 23%, 30%, .1), 0 3px 6px 0 hsla(0, 0%, 0%, .07);
+    --content-panel-bg: hsl(210, 45%, 98%);
     --form-bg: hsl(210, 45%, 98%);
+    --table-header-bg: hsl(210, 40%, 95%);
+    --table-footer-bg: hsl(210, 45%, 98%);
     --fieldset-bg: hsl(210, 30%, 97%);
+
+    --zindex-700: 777;
+    --zindex-800: 888;
+    --zindex-900: 999;
+    --zindex-1050: 1050;
 
     --white: hsl(0, 0%, 100%);
     --gray-50: hsl(210, 17%, 98%);
@@ -37,6 +47,18 @@
     --gray-800: hsl(210, 10%, 23%);
     --gray-900: hsl(213, 12%, 15%);
     --black: hsl(0, 0%, 0%);
+
+    --blue-100: hsl(189, 82%, 86%);
+    --green-100: hsl(117, 66%, 86%);
+    --indigo-100: hsl(208, 100%, 91%);
+    --red-100: hsl(9, 89%, 92%);
+    --yellow-100: hsl(42, 82%, 84%);
+
+    --text-blue-600: hsl(206, 91%, 30%);
+    --text-green-600: hsl(159, 75%, 21%);
+    --text-indigo-600: hsl(231, 48%, 45%);
+    --text-red-600: hsl(338, 71%, 37%);
+    --text-yellow-600: hsl(20, 94%, 30%);
 
     --color-primary: hsl(230, 55%, 60%);
     --color-success: hsl(157, 69%, 38%);

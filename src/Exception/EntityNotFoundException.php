@@ -2,10 +2,12 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Exception;
 
+use EasyCorp\Bundle\EasyAdminBundle\Context\ExceptionContext;
+
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class EntityNotFoundException extends BaseException
+final class EntityNotFoundException extends BaseException
 {
     public function __construct(array $parameters = [])
     {

@@ -1,10 +1,8 @@
 // Forms
 // ----------------------------------------------------------------------------
 
-.content-body form,
-.content-body .form-horizontal {
-    background: var(--form-bg);
-    padding: 18px 20px;
+input[disabled] {
+    cursor: not-allowed;
 }
 
 // Base form groups
@@ -12,21 +10,55 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    padding: 10px 20px;
+    padding: 10px 0px;
 }
 
-.form-group label,
-.form-group legend.col-form-label {
+.form-group label {
     align-self: self-start;
     color: var(--text-color);
-    flex: 30% 0 0;
+    flex: 100% 0 0;
     font-size: var(--font-size-base);
     font-weight: 400;
-    margin: 5px 5px 0 0;
-    text-align: right;
+    margin: 5px 0 5px;
+    text-align: left;
 }
+
+.form-group legend.col-form-label {
+    align-self: self-start;
+}
+
+@media(min-width: 1024px) {
+    .form-group label,
+    .form-group legend.col-form-label {
+        flex: 15% 0 0;
+        margin: 5px 5px 0 0;
+        text-align: right;
+    }
+}
+@media(min-width: 1280px) {
+    .form-group label,
+    .form-group legend.col-form-label {
+        flex: 25% 0 0;
+    }
+}
+
 .form-group .col-form-label {
     padding: 0;
+}
+
+// Used in checkbox and radio buttons
+label.form-check-label {
+    cursor: pointer;
+    font-size: var(--font-size-base);
+    margin-top: 0;
+    margin-left: 4px;
+}
+.form-group label.form-check-label.required:after {
+    content: '';
+}
+.form-widget .form-check:first-child,
+.form-widget .form-check + .form-check {
+    margin-top: 5px;
 }
 
 .form-group label.required:after,
@@ -37,18 +69,30 @@
     filter: opacity(75%);
     position: relative;
     right: -2px;
+    z-index: var(--zindex-700);
 }
 
 // Form widgets (inputs, selects, etc.)
 .form-widget {
     align-items: flex-start;
-    flex: 0 0 55%;
+    flex: 100%;
     flex-direction: column;
-    padding-left: 5px;
+}
+
+@media(min-width: 1024px) {
+    .form-widget {
+        flex: 0 0 55%;
+        padding-left: 5px;
+    }
+
+    .full-width .form-widget {
+        flex: 1;
+        padding-right: 45px;
+    }
 }
 
 .form-widget .form-help {
-    color: var(--text-muted);
+    color: var(--gray-600);
     display: inline-block;
     font-size: var(--font-size-sm);
     margin-bottom: 0;
@@ -59,13 +103,31 @@
 .form-widget textarea.form-control,
 .form-widget select.form-control {
     border: 0;
-    padding: 3px 7px 5px;
+    padding: 3px 7px 4px;
     box-shadow: 0 0 0 1px rgba(43, 45, 80, .16), 0 0 0 1px rgba(6, 122, 184, 0), 0 0 0 2px rgba(6, 122, 184, 0), 0 1px 1px rgba(0, 0, 0, .08);
     height: 30px;
     max-width: 350px;
     white-space: nowrap;
     word-break: keep-all;
     transition: box-shadow .08s ease-in, color .08s ease-in;
+}
+
+.full-width .form-widget input.form-control,
+.full-width .form-widget textarea.form-control,
+.full-width .form-widget select.form-control {
+    max-width: none;
+}
+
+.form-widget .form-control + .input-group-append {
+    color: var(--gray-600);
+    height: 30px;
+}
+.form-widget .form-control + .input-group-append i {
+    color: var(--gray-600);
+}
+
+.form-widget input.form-control[align=right] {
+    text-align: right;
 }
 
 .form-widget input.form-control:focus,
@@ -93,28 +155,26 @@
 }
 
 // Checkbox widgets
-.field-checkbox .form-widget,
-.form-group.field-collection-action {
-    margin-left: calc(30% + 5px);
-    margin-bottom: 0;
-    margin-top: 0;
+.field-boolean .form-widget {
+    margin: 0;
 }
-.form-group.field-collection-action {
-    margin-left: 30%;
-}
-
-.field-checkbox .form-check {
+.field-boolean .form-check {
     padding-left: 0;
 }
-.field-checkbox .form-check-label {
-    cursor: pointer;
-    font-size: var(--font-size-base);
-    margin-top: 0;
-    margin-left: 4px;
-}
-.field-checkbox .form-check-input {
+.field-boolean .form-check-input {
     margin: 0;
     position: static;
+}
+
+@media(min-width: 1024px) {
+    .field-boolean .form-widget {
+        margin-left: calc(15% + 5px);
+    }
+}
+@media(min-width: 1280px) {
+    .field-boolean .form-widget {
+        margin-left: calc(25% + 5px);
+    }
 }
 
 // in Bootstrap custom file widgets, the label is used to simulate the file input
@@ -207,37 +267,6 @@ fieldset .form-group .nullable-control label {
     flex: 0 0 100% !important;
     height: 500px;
     max-width: unset !important;
-}
-
-// Form collections
-.form-widget-compound .collection-empty {
-    padding-top: 5px;
-}
-
-.form-widget-compound .form-group {
-    padding: 0 20px 15px 0;
-}
-
-.form-widget-compound .form-group .form-widget {
-    flex: 0 0 100%;
-    padding-left: 0;
-}
-
-.field-collection-item-row .form-control {
-    display: inline-flex;
-}
-.form-group.field-collection-action {
-    padding-top: 0;
-}
-.field-collection-item-action {
-    font-size: 21px;
-    font-weight: bold;
-    margin-left: 4px;
-    position: relative;
-    top: 2px;
-}
-.form-widget-compound > div > .form-group:last-child {
-    padding-bottom: 5px;
 }
 
 // Form tabs
@@ -387,11 +416,9 @@ fieldset .legend-help {
 // Form actions ("Save changes", "Delete", etc.)
 .form-actions {
     display: flex;
-    justify-items: flex-end;
-    flex-direction: row-reverse;
+    justify-content: flex-end;
     padding: 0;
 }
-
 .form-actions .btn {
     margin-left: 10px;
 }
@@ -407,14 +434,14 @@ fieldset .legend-help {
 .has-error .form-widget input.form-control,
 .has-error .form-widget textarea.form-control,
 .has-error .form-widget select.form-control,
-.has-error .easyadmin-fileupload .input-group,
+.has-error .ea-fileupload .input-group,
 .has-error .btn.input-file-container,
 .has-error .CodeMirror,
-.has-error .easyadmin-text-editor-wrapper {
+.has-error .ea-text-editor-wrapper {
     box-shadow: 0 0 0 1px rgba(43, 45, 80, 0), 0 0 0 1px rgba(183, 6, 32, .2), 0 0 0 2px rgba(183, 6, 32, .25), 0 1px 1px rgba(0, 0, 0, .08);
 }
 
-.has-error .easyadmin-fileupload .input-group {
+.has-error .ea-fileupload .input-group {
     border-radius: var(--border-radius);
 }
 
@@ -432,8 +459,32 @@ form .invalid-feedback > .d-block + .d-block {
     margin-top: 5px;
 }
 
+// Form group inputs
+.input-group-text {
+    background-color: var(--gray-100);
+    border: 0;
+    box-shadow: 0 0 0 1px rgba(43,45,80,.16), 0 0 0 1px rgba(6,122,184,0), 0 0 0 2px rgba(6,122,184,0), 0 1px 1px rgba(0,0,0,.08);
+    color: var(--gray-700);
+    height: 30px;
+    padding: 3px 10px 5px;
+}
+.input-group-append {
+    margin-left: 0;
+}
+.input-group-prepend {
+    margin-right: 0;
+}
+
+.field-percent input.form-control {
+    max-width: 75px;
+}
+
+.field-money input.form-control {
+    max-width: 150px;
+}
+
 //fileupload widgets
-.easyadmin-fileupload {
+.ea-fileupload {
     max-width: 350px;
 
     .custom-file {
@@ -507,44 +558,44 @@ form .invalid-feedback > .d-block + .d-block {
 }
 
 // Image/file vich uploads
-.easyadmin-vich-image img {
+.ea-vich-image img {
     box-shadow: 0 0 0 4px var(--white), 0px 0px 4px 3px var(--gray-600);
     margin: 6px 4px 12px;
     max-height: 300px;
     max-width: 100%;
 }
 
-.easyadmin-vich-file-name {
+.ea-vich-file-name {
     display: block;
     margin: 4px 0 8px;
 }
 
-.easyadmin-vich-file-name .fa {
+.ea-vich-file-name .fa {
     font-size: 18px;
 }
 
 // this element should use 'display: flex', but that doesn't work with
 // the CSS trick used to customize the <input type="file" /> fields.
 
-.easyadmin-vich-image-actions > div,
-.easyadmin-vich-file-actions > div {
+.ea-vich-image-actions > div,
+.ea-vich-file-actions > div {
     float: left;
     margin-right: 4px;
 }
 
-.easyadmin-vich-image-actions:after,
-.easyadmin-vich-file-actions:after {
+.ea-vich-image-actions:after,
+.ea-vich-file-actions:after {
     clear: left;
     content: "";
     display: block;
 }
 
-.easyadmin-vich-image-actions .field-checkbox,
-.easyadmin-vich-file-actions .field-checkbox {
+.ea-vich-image-actions .field-checkbox,
+.ea-vich-file-actions .field-checkbox {
     padding-top: 4px;
 }
 
-.easyadmin-vich-image-actions .form-widget {
+.ea-vich-image-actions .form-widget {
     flex-basis: 100%;
 }
 
@@ -567,9 +618,4 @@ form .invalid-feedback > .d-block + .d-block {
     right: 0;
     text-align: right;
     top: 0;
-}
-
-// EasyAdminCodeType
-.field-easyadmin_code_editor .form-widget {
-    flex-basis: 65%;
 }

@@ -13,6 +13,13 @@ Encore
     .disableSingleRuntimeChunk()
     .autoProvidejQuery()
 
+    // copy FontAwesome fonts
+    .copyFiles({
+        from: './node_modules/@fortawesome/fontawesome-free/webfonts/',
+        // relative to the output dir
+        to: 'fonts/[name].[hash].[ext]'
+    })
+
     // copy select2 i18n files
     .copyFiles({
         from: './node_modules/select2/dist/js/i18n/',
@@ -40,6 +47,9 @@ Encore
     .addEntry('app-custom-rtl', './assets/js/app-custom-rtl.js')
     .addEntry('form-type-code-editor', './assets/js/form-type-code-editor.js')
     .addEntry('form-type-text-editor', './assets/js/form-type-text-editor.js')
+    .addEntry('form-type-collection', './assets/js/form-type-collection.js')
+    .addEntry('form-type-slug', './assets/js/form-type-slug.js')
+    .addEntry('form-type-textarea', './assets/js/form-type-textarea.js')
 ;
 
 module.exports = Encore.getWebpackConfig();

@@ -11,30 +11,31 @@ import 'featherlight';
 import 'jquery-highlight';
 import 'select2';
 
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
     $('[data-toggle="popover"]').popover();
+    $('[data-toggle="tooltip"]').tooltip();
     createNullableControls();
+
     createAutoCompleteFields();
-    $(document).on('easyadmin.collection.item-added', createAutoCompleteFields);
+    document.addEventListener('ea.collection.item-added', createAutoCompleteFields);
+
     createContentResizer();
     createNavigationToggler();
-    createCodeEditorFields();
-    createTextEditorFields();
     createFileUploadFields();
 });
 
 function createNullableControls() {
-    var fnNullDates = function() {
+    var fnNullDates = function () {
         var checkbox = $(this);
 
-        checkbox.closest('.form-group').find('select, input[type="date"], input[type="time"], input[type="datetime-local"]').each(function() {
+        checkbox.closest('.form-group').find('select, input[type="date"], input[type="time"], input[type="datetime-local"]').each(function () {
             var formFieldIsDisabled = checkbox.is(':checked');
             $(this).prop('disabled', formFieldIsDisabled);
 
             if (formFieldIsDisabled) {
-                $(this).closest('.datetime-widget').slideUp({ duration: 200 });
+                $(this).closest('.datetime-widget').slideUp({duration: 200});
             } else {
-                $(this).closest('.datetime-widget').slideDown({ duration: 200 });
+                $(this).closest('.datetime-widget').slideDown({duration: 200});
             }
         });
     };
@@ -43,36 +44,44 @@ function createNullableControls() {
 }
 
 function createAutoCompleteFields() {
-    var autocompleteFields = $('[data-easyadmin-autocomplete-url]');
+    var autocompleteFields = $('[data-widget="select2"]:not(.select2-hidden-accessible)');
 
     autocompleteFields.each(function () {
         var $this = $(this),
-            url = $this.data('easyadmin-autocomplete-url');
+            autocompleteUrl = $this.data('ea-autocomplete-endpoint-url'),
+            allowClear = $this.data('allow-clear');
 
-        $this.select2({
-            theme: 'bootstrap',
-            ajax: {
-                url: url,
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return { 'query': params.term, 'page': params.page };
+        if (undefined === autocompleteUrl) {
+            $this.select2({theme: 'bootstrap', allowClear: true});
+        } else {
+            $this.select2({
+                theme: 'bootstrap',
+                ajax: {
+                    url: autocompleteUrl,
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {'query': params.term, 'page': params.page};
+                    },
+                    // to indicate that infinite scrolling can be used
+                    processResults: function (data, params) {
+                        return {
+                            results: $.map(data.results, function (result) {
+                                return {id: result.entityId, text: result.entityAsString};
+                            }),
+                            pagination: {
+                                more: data.has_next_page
+                            }
+                        };
+                    },
+                    cache: true
                 },
-                // to indicate that infinite scrolling can be used
-                processResults: function (data, params) {
-                    return {
-                        results: data.results,
-                        pagination: {
-                            more: data.has_next_page
-                        }
-                    };
-                },
-                cache: true
-            },
-            placeholder: '',
-            allowClear: true,
-            minimumInputLength: 0
-        });
+                placeholder: '',
+                allowClear: allowClear,
+                minimumInputLength: 1
+            });
+        }
+
     });
 }
 
@@ -81,44 +90,44 @@ function createContentResizer() {
     const contentResizerHandler = document.getElementById('content-resizer-handler');
 
     if (null !== sidebarResizerHandler) {
-        sidebarResizerHandler.addEventListener('click', function() {
-            const oldValue = localStorage.getItem('easyadmin/sidebar/width') || 'normal';
+        sidebarResizerHandler.addEventListener('click', function () {
+            const oldValue = localStorage.getItem('ea/sidebar/width') || 'normal';
             const newValue = 'normal' == oldValue ? 'compact' : 'normal';
 
-            document.querySelector('body').classList.remove('easyadmin-sidebar-width-' + oldValue);
-            document.querySelector('body').classList.add('easyadmin-sidebar-width-' + newValue);
-            localStorage.setItem('easyadmin/sidebar/width', newValue);
+            document.querySelector('body').classList.remove('ea-sidebar-width-' + oldValue);
+            document.querySelector('body').classList.add('ea-sidebar-width-' + newValue);
+            localStorage.setItem('ea/sidebar/width', newValue);
         });
     }
 
     if (null !== contentResizerHandler) {
-        contentResizerHandler.addEventListener('click', function() {
-            const oldValue = localStorage.getItem('easyadmin/content/width') || 'normal';
+        contentResizerHandler.addEventListener('click', function () {
+            const oldValue = localStorage.getItem('ea/content/width') || 'normal';
             const newValue = 'normal' == oldValue ? 'full' : 'normal';
 
-            document.querySelector('body').classList.remove('easyadmin-content-width-' + oldValue);
-            document.querySelector('body').classList.add('easyadmin-content-width-' + newValue);
-            localStorage.setItem('easyadmin/content/width', newValue);
+            document.querySelector('body').classList.remove('ea-content-width-' + oldValue);
+            document.querySelector('body').classList.add('ea-content-width-' + newValue);
+            localStorage.setItem('ea/content/width', newValue);
         });
     }
 }
 
 function createNavigationToggler() {
     const toggler = document.getElementById('navigation-toggler');
-    const cssClassName = 'easyadmin-mobile-sidebar-visible';
+    const cssClassName = 'ea-mobile-sidebar-visible';
     let modalBackdrop;
 
     if (null === toggler) {
         return;
     }
 
-    toggler.addEventListener('click', function() {
+    toggler.addEventListener('click', function () {
         document.querySelector('body').classList.toggle(cssClassName);
 
         if (document.querySelector('body').classList.contains(cssClassName)) {
             modalBackdrop = document.createElement('div');
             modalBackdrop.classList.add('modal-backdrop', 'fade', 'show');
-            modalBackdrop.onclick = function() {
+            modalBackdrop.onclick = function () {
                 document.querySelector('body').classList.remove(cssClassName);
                 document.body.removeChild(modalBackdrop);
                 modalBackdrop = null;
@@ -132,58 +141,7 @@ function createNavigationToggler() {
     });
 }
 
-// Code editor fields require extra JavaScript dependencies, which are loaded
-// dynamically only when there are code editor fields in the page
-function createCodeEditorFields()
-{
-    const codeEditorElements = document.querySelectorAll('[data-easyadmin-code-editor]');
-    if (codeEditorElements.length === 0) {
-        return;
-    }
-
-    const codeEditorJs = document.createElement('script');
-    codeEditorJs.setAttribute('src', codeEditorElements[0].dataset.jsUrl);
-
-    const codeEditorCss = document.createElement('link');
-    codeEditorCss.setAttribute('rel', 'stylesheet');
-    codeEditorCss.setAttribute('href', codeEditorElements[0].dataset.cssUrl);
-
-    const codeEditorRtlCss = document.createElement('link');
-    codeEditorRtlCss.setAttribute('rel', 'stylesheet');
-    codeEditorRtlCss.setAttribute('href', codeEditorElements[0].dataset.cssUrl.replace('.css', '.rtl.css'));
-
-    document.querySelector('head').appendChild(codeEditorCss);
-    document.querySelector('head').appendChild(codeEditorRtlCss);
-    document.querySelector('body').appendChild(codeEditorJs);
-}
-
-// Text editor fields require extra JavaScript dependencies, which are loaded
-// dynamically only when there are code editor fields in the page
-function createTextEditorFields()
-{
-    const textEditorElements = document.querySelectorAll('trix-editor');
-    if (textEditorElements.length === 0) {
-        return;
-    }
-
-    const textEditorJs = document.createElement('script');
-    textEditorJs.setAttribute('src', textEditorElements[0].dataset.jsUrl);
-
-    const textEditorCss = document.createElement('link');
-    textEditorCss.setAttribute('rel', 'stylesheet');
-    textEditorCss.setAttribute('href', textEditorElements[0].dataset.cssUrl);
-
-    const textEditorRtlCss = document.createElement('link');
-    textEditorRtlCss.setAttribute('rel', 'stylesheet');
-    textEditorRtlCss.setAttribute('href', textEditorElements[0].dataset.cssUrl.replace('.css', '.rtl.css'));
-
-    document.querySelector('head').appendChild(textEditorCss);
-    document.querySelector('head').appendChild(textEditorRtlCss);
-    document.querySelector('body').appendChild(textEditorJs);
-}
-
-function createFileUploadFields()
-{
+function createFileUploadFields() {
     function fileSize(bytes) {
         const size = ['B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
         const factor = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
@@ -191,7 +149,7 @@ function createFileUploadFields()
         return parseInt(bytes / (1024 ** factor)) + size[factor];
     }
 
-    $(document).on('change', '.easyadmin-fileupload input[type=file].custom-file-input', function () {
+    $(document).on('change', '.ea-fileupload input[type=file].custom-file-input', function () {
         if (this.files.length === 0) {
             return;
         }
@@ -208,14 +166,14 @@ function createFileUploadFields()
             bytes += this.files[i].size;
         }
 
-        const container = $(this).closest('.easyadmin-fileupload');
+        const container = $(this).closest('.ea-fileupload');
         container.find('.custom-file-label').text(filename);
         container.find('.input-group-text').text(fileSize(bytes)).show();
-        container.find('.easyadmin-fileupload-delete-btn').show();
+        container.find('.ea-fileupload-delete-btn').show();
     });
 
-    $(document).on('click', '.easyadmin-fileupload .easyadmin-fileupload-delete-btn', function () {
-        const container = $(this).closest('.easyadmin-fileupload');
+    $(document).on('click', '.ea-fileupload .ea-fileupload-delete-btn', function () {
+        const container = $(this).closest('.ea-fileupload');
         container.find('input').val('').removeAttr('title');
         container.find('.custom-file-label').text('');
         container.find('.input-group-text').text('').hide();

@@ -16,12 +16,12 @@ import 'codemirror/mode/yaml-frontmatter/yaml-frontmatter';
 import 'codemirror/mode/yaml/yaml';
 import 'codemirror/addon/display/autorefresh';
 
-document.querySelectorAll('[data-easyadmin-code-editor]').forEach(function(codeBlock) {
+document.querySelectorAll('[data-ea-code-editor-field]').forEach(function(codeBlock) {
     const editor = CodeMirror.fromTextArea(codeBlock, {
         autocapitalize: false,
         autocorrect: false,
-        indentWithTabs: codeBlock.dataset.indentWithTabs,
-        lineNumbers: true,
+        indentWithTabs: codeBlock.dataset.indentWithTabs === 'true',
+        lineNumbers: codeBlock.dataset.showLineNumbers === 'true',
         lineWrapping: true,
         mode: codeBlock.dataset.language,
         scrollbarStyle: 'native',

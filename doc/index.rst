@@ -1,57 +1,58 @@
-EasyAdminBundle
-===============
+EasyAdmin
+=========
 
-`EasyAdminBundle`_ creates administration backends for your Symfony applications.
+.. raw:: html
 
-.. seealso::
+    <div class="box box--small box--warning">
+        <strong class="title">WARNING:</strong>
 
-    Do you prefer video tutorials? Check out this SymfonyCasts series:
-    `EasyAdminBundle for an Amazing Admin Interface`_.
+        You are browsing the documentation for <strong>EasyAdmin 3.x</strong>,
+        which has just been released. Switch to
+        <a href="https://symfony.com/doc/2.x/bundles/EasyAdminBundle/index.html">EasyAdmin 2.x docs</a>
+        if your application has not been upgraded to EasyAdmin 3 yet.
+    </div>
 
-.. toctree::
-    :maxdepth: 1
+`EasyAdmin`_ creates beautiful administration backends for your Symfony
+applications. It's free, fast and fully documented.
 
-    book/installation
-    book/your-first-backend
-    book/basic-configuration
-    book/design-configuration
-    book/list-search-show-configuration
-    book/edit-new-configuration
-    book/actions-configuration
-    book/menu-configuration
-    book/complex-dynamic-backends
-    book/configuration-reference
+If you already used previous EasyAdmin versions, beware that EasyAdmin 3 uses a
+brand new architecture and it's incompatible with previous versions. However,
+there's a command to :doc:`upgrade from EasyAdmin 2 to EasyAdmin 3 automatically </upgrade>`.
 
-Tutorials
----------
+Table of Contents
+-----------------
 
 .. toctree::
     :maxdepth: 1
 
-    tutorials/i18n
-    tutorials/custom-actions
-    tutorials/custom-property-options
-    tutorials/complex-backend-config
-    tutorials/tips-and-tricks
+    dashboards
+    crud
+    design
+    fields
+    filters
+    actions
+    security
+    events
+    upgrade
 
-Integration with other bundles
-------------------------------
+Technical Requirements
+----------------------
 
-.. toctree::
-    :maxdepth: 1
+EasyAdmin requires the following:
 
-    integration/vichuploaderbundle
-    integration/fosuserbundle
-    integration/ivoryckeditorbundle
-    integration/fosrestbundle
+* PHP 7.2 or higher;
+* Symfony 4.4 or higher;
+* Doctrine ORM entities (Doctrine ODM is not supported).
 
-About
------
+Installation
+------------
 
-.. toctree::
-    :maxdepth: 1
+Run the following command to install EasyAdmin in your application:
 
-    misc/about
+.. code-block:: terminal
 
-.. _`EasyAdminBundle`: https://github.com/EasyCorp/EasyAdminBundle
-.. _`EasyAdminBundle for an Amazing Admin Interface`: https://symfonycasts.com/screencast/easyadminbundle
+    $ composer require easycorp/easyadmin-bundle
+
+Now you are ready to :doc:`create your first Dashboard </dashboards>`.
+
+.. _`EasyAdmin`: https://github.com/EasyCorp/EasyAdminBundle

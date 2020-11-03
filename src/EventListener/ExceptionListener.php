@@ -4,9 +4,11 @@ namespace EasyCorp\Bundle\EasyAdminBundle\EventListener;
 
 use EasyCorp\Bundle\EasyAdminBundle\Exception\BaseException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\FlattenException;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Twig\Environment;
+use Twig\Error\RuntimeError;
 
 /**
  * This listener allows to display customized error pages in the production
@@ -17,43 +19,63 @@ use Twig\Environment;
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
-class ExceptionListener
+final class ExceptionListener
 {
+    private $kernelDebug;
+    private $adminContextProvider;
     private $twig;
-    private $easyAdminConfig;
-    private $currentEntityName;
 
-    public function __construct(Environment $twig, array $easyAdminConfig)
+    public function __construct(bool $kernelDebug, AdminContextProvider $adminContextProvider, Environment $twig)
     {
+        $this->kernelDebug = $kernelDebug;
+        $this->adminContextProvider = $adminContextProvider;
         $this->twig = $twig;
-        $this->easyAdminConfig = $easyAdminConfig;
     }
 
-    public function onKernelException(GetResponseForExceptionEvent $event)
+    public function onKernelException(ExceptionEvent $event)
     {
-        $exception = $event->getException();
-        if (!$exception instanceof BaseException) {
+        $exception = $event->getThrowable();
+
+        if ($this->kernelDebug && $exception instanceof RuntimeError && 'Variable "ea" does not exist.' === $exception->getRawMessage()) {
+            $exception->appendMessage($this->getEaVariableExceptionMessage());
+
             return;
         }
 
-        $this->currentEntityName = $event->getRequest()->query->get('entity');
+        if ($this->kernelDebug || !$exception instanceof BaseException) {
+            return;
+        }
 
-        $event->setResponse($this->showExceptionPageAction(FlattenException::create($exception)));
+        // TODO: check why these custom error pages don't work
+        $event->setResponse($this->createExceptionResponse(FlattenException::create($exception)));
     }
 
-    public function showExceptionPageAction(FlattenException $exception)
+    public function createExceptionResponse(FlattenException $exception): Response
     {
-        $entityConfig = $this->easyAdminConfig['entities'][$this->currentEntityName] ?? null;
-        $exceptionTemplatePath = $entityConfig['templates']['exception']
-            ?? $this->easyAdminConfig['design']['templates']['exception']
-            ?? '@EasyAdmin/default/exception.html.twig';
-        $exceptionLayoutTemplatePath = $entityConfig['templates']['layout']
-            ?? $this->easyAdminConfig['design']['templates']['layout']
-            ?? '@EasyAdmin/default/layout.html.twig';
+        $context = $this->adminContextProvider->getContext();
+        $exceptionTemplatePath = null === $context ? '@EasyAdmin/exception.html.twig' : $context->getTemplatePath('exception');
+        $layoutTemplatePath = null === $context ? '@EasyAdmin/layout.html.twig' : $context->getTemplatePath('layout');
 
-        return Response::create($this->twig->render($exceptionTemplatePath, [
+        return new Response($this->twig->render($exceptionTemplatePath, [
             'exception' => $exception,
-            'layout_template_path' => $exceptionLayoutTemplatePath,
+            'layout_template_path' => $layoutTemplatePath,
         ]), $exception->getStatusCode());
+    }
+
+    private function getEaVariableExceptionMessage(): string
+    {
+        return <<<MESSAGE
+
+
+The "ea" variable stores the admin context (menu items, actions, fields, etc.) and it's created automatically for requests served by EasyAdmin.
+
+If you are seeing this error, you are trying to use some EasyAdmin features in a request not served by EasyAdmin. For example, some of your custom actions may be trying to render or extend from one of the templates provided EasyAdmin.
+
+Your request must meet one of these conditions to be served by EasyAdmin (and to have the "ea" variable defined):
+
+1) It must be run by a controller that implements DashboardControllerInterface. This is done automatically for all actions and CRUD controllers associated to your dashboard.
+
+2) It must contain an "eaContext" query string parameter that identifies the Dashboard associated to this request (this parameter is automatically added by EasyAdmin when creating menu items that link to custom Symfony routes).
+MESSAGE;
     }
 }

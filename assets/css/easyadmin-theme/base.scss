@@ -15,17 +15,26 @@ body {
 
 // Needed because we always add 'fa fa-' to the given icon name, so these
 // styles allow to override that with icon names such as 'symfony fab'
-i.fa, i.fas {
+i.fa, i.fas, i.far {
     font-family: 'Font Awesome 5 Free' !important;
 }
 i.fab {
     font-family: 'Font Awesome 5 Brands' !important;
 }
-i.far, i.fal {
+i.fal {
     font-family: 'Font Awesome 5 Pro' !important;
 }
 i.fad {
     font-family: 'Font Awesome 5 Duotone' !important;
+}
+
+code, pre {
+    color: #c44c34;
+    font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+    font-size: 13px;
+}
+pre {
+    line-height: 1.8;
 }
 
 /* Layout
@@ -36,7 +45,6 @@ i.fad {
 .content { grid-area: content; }
 #sidebar-resizer-handler { grid-area: sidebar-resizer-handler; }
 #content-resizer-handler { grid-area: content-resizer-handler; }
-#flash-messages { grid-area: flash-messages; }
 
 .wrapper {
     display: grid;
@@ -47,8 +55,8 @@ i.fad {
     ;
     margin: 20px 15px;
 
-    @media(min-width: 992px) {
-        grid-template-columns: var(--sidebar-width) auto;
+    @media(min-width: 1024px) {
+        grid-template-columns: fit-content(var(--sidebar-max-width)) auto;
         grid-column-gap: 15px;
         grid-template-areas:
             "header   header"
@@ -58,13 +66,19 @@ i.fad {
         margin-right: auto;
         width: calc(100% - 2 * 20px);
     }
+
+    @media(min-width: 1280px) {
+        grid-column-gap: 35px;
+    }
 }
 
-body:not(.easyadmin-content-width-full) .wrapper {
+body:not(.ea-content-width-full) .wrapper {
     max-width: var(--body-max-width);
 }
-body.easyadmin-sidebar-width-compact .wrapper {
-    @media(min-width: 992px) {
+body.ea-sidebar-width-compact .wrapper {
+    grid-column-gap: 25px;
+
+    @media(min-width: 1024px) {
         grid-template-columns: 24px auto;
     }
 }
@@ -72,7 +86,7 @@ body.easyadmin-sidebar-width-compact .wrapper {
 .main-header {
     display: flex;
     justify-content: space-between;
-    @media(min-width: 992px) {
+    @media(min-width: 1024px) {
         padding-right: 10px; // same as the width of #content-resizer-handler
     }
 }
@@ -106,7 +120,7 @@ body.easyadmin-sidebar-width-compact .wrapper {
     padding: 0;
     width: 24px;
 
-    @media(min-width: 992px) {
+    @media(min-width: 1024px) {
         display: none;
     }
 }
@@ -114,25 +128,25 @@ body.easyadmin-sidebar-width-compact .wrapper {
 .main-sidebar {
     background: var(--body-bg);
     height: 100vh;
-    left: calc(0px - 2 * 20px - var(--sidebar-width));
+    left: calc(0px - 2 * 20px - var(--sidebar-max-width));
     overflow-x: hidden;
     overflow-y: auto;
     padding: 15px 20px;
-    position: absolute;
+    position: fixed;
     top: 0;
     transition: left 0.3s;
     z-index: $zindex-modal-backdrop + 1;
-    width: calc(2 * 20px + var(--sidebar-width));
+    width: calc(2 * 20px + var(--sidebar-max-width));
 
-    @media(min-width: 992px) {
+    @media(min-width: 1024px) {
         height: unset;
         padding: 0;
         position: static;
-        width: var(--sidebar-width);
         z-index: $zindex-modal-backdrop - 1;
+        width: initial;
     }
 }
-body.easyadmin-mobile-sidebar-visible .main-sidebar {
+body.ea-mobile-sidebar-visible .main-sidebar {
     left: 0;
 }
 
@@ -187,51 +201,58 @@ body.easyadmin-mobile-sidebar-visible .main-sidebar {
     grid-column-gap: 0;
     grid-row-gap: 0;
     grid-template-areas:
-            "flash-messages           flash-messages  flash-messages"
-            "sidebar-resizer-handler  content         content-resizer-handler"
+            "sidebar-resizer-handler content content-resizer-handler"
     ;
     grid-template-columns: 0 auto 0;
+    margin-top: -14px;
 
-    @media(min-width: 992px) {
+    @media(min-width: 1024px) {
         grid-template-columns: 10px auto 10px;
     }
 }
 
 .content {
-    background-color: var(--white);
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow-lg);
 }
 
 .resizer-handler {
-    background: rgba(0, 0, 0, 0.1) center no-repeat url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" viewBox="0 0 320 512"><path fill="rgba(0, 0, 0, 0.7)" d="M96 32H32C14.33 32 0 46.33 0 64v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32V64c0-17.67-14.33-32-32-32zm0 160H32c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zm0 160H32c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zM288 32h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32V64c0-17.67-14.33-32-32-32zm0 160h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zm0 160h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32z"></path></svg>');
+    background: transparent center no-repeat url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" viewBox="0 0 320 512"><path fill="none" d="M96 32H32C14.33 32 0 46.33 0 64v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32V64c0-17.67-14.33-32-32-32zm0 160H32c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zm0 160H32c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zM288 32h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32V64c0-17.67-14.33-32-32-32zm0 160h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zm0 160h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32z"></path></svg>');
     cursor: col-resize;
     display: none;
-    opacity: 0.15;
-    transition: opacity 0.7s;
+    transition: background 0.7s;
 
     &:hover {
-        opacity: 1;
+        background: rgba(0, 0, 0, 0.1) center no-repeat url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" viewBox="0 0 320 512"><path fill="rgba(0, 0, 0, 0.7)" d="M96 32H32C14.33 32 0 46.33 0 64v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32V64c0-17.67-14.33-32-32-32zm0 160H32c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zm0 160H32c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zM288 32h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32V64c0-17.67-14.33-32-32-32zm0 160h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zm0 160h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32z"></path></svg>');
     }
 
-    @media(min-width: 992px) {
+    @media(min-width: 1024px) {
         display: block;
     }
 }
-.resizer-handler-left {
-    border-bottom-left-radius: var(--border-radius);
-    border-top-left-radius: var(--border-radius);
-}
-.resizer-handler-right {
-    border-bottom-right-radius: var(--border-radius);
-    border-top-right-radius: var(--border-radius);
-}
 
 .content-header {
-    border-bottom: var(--border-width) var(--border-style) var(--border-color);
+    background: var(--body-bg);
     display: flex;
     flex-direction: column;
-    padding: 15px 17px 15px 20px;
+    margin-bottom: 2px;
+    padding: 10px 0;
+    position: sticky;
+    top: 0;
+    z-index: var(--zindex-800);
+}
+// this is needed for aesthetic reasons
+.content-header:before,
+.content-header:after {
+    background: var(--body-bg);
+    content: "";
+    height: 100%;
+    left: -10px;
+    position: absolute;
+    top: 0;
+    width: 10px;
+}
+.content-header:after {
+    left: unset;
+    right: -10px;
 }
 
 // reduce the padding in 'list' pages to compensate for the height of '.global-actions'
@@ -241,29 +262,40 @@ body.easyadmin-mobile-sidebar-visible .main-sidebar {
 }
 
 .content-header-title {
-    align-self: center;
+    align-self: flex-end;
     flex: 1;
 }
-// when contents define help, change vertical align to 'flex-start' because it looks better than 'center'
-.content-header.has-content-help .content-header-title {
-    align-self: flex-end;
-}
 .content-header-title .title {
-    font-size: var(--font-size-lg);
-    line-height: 24px;
+    font-size: var(--font-size-xl);
+    line-height: 1;
     margin: 0;
 }
+.content-header-title .title small {
+    color: var(--gray-600);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    line-height: var(--font-size-sm);
+}
 
-.content-header .global-actions {
+.content-header-help {
+    color: var(--gray-600);
+}
+
+.content-header .page-actions {
     align-items: center;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     margin-left: 10px;
-}
+    margin-right: 1px;
 
-.global-actions .btn {
-    margin-left: 15px;
+    .btn {
+        margin-left: 10px;
+    }
+
+    .btn-group .btn + .btn {
+        margin-left: 0;
+    }
 }
 
 .batch-actions form {
@@ -273,25 +305,19 @@ body.easyadmin-mobile-sidebar-visible .main-sidebar {
     margin-left: 15px;
 }
 
-.form-action-search .form-group {
-    margin: 0;
-    padding: 0;
+.with-rounded-top {
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
 }
-
-.form-action-search input[type="search"].form-control {
-    background-color: var(--white);
-    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path fill="%23aaa" d="M1216 832q0-185-131.5-316.5t-316.5-131.5-316.5 131.5-131.5 316.5 131.5 316.5 316.5 131.5 316.5-131.5 131.5-316.5zm512 832q0 52-38 90t-90 38q-54 0-90-38l-343-342q-179 124-399 124-143 0-273.5-55.5t-225-150-150-225-55.5-273.5 55.5-273.5 150-225 225-150 273.5-55.5 273.5 55.5 225 150 150 225 55.5 273.5q0 220-124 399l343 343q37 37 37 90z"/></svg>');
-    background-repeat: no-repeat;
-    background-size: 13px 13px;
-    background-position: 10px 8px;
-    padding-left: 32px;
-    width: 300px;
+.with-rounded-bottom {
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
 }
-
-.content-header-help {
-    color: var(--text-muted);
-    font-size: var(--font-size-sm);
-    margin-top: 12px;
+.datagrid.with-rounded-top thead tr:first-child th:first-child {
+    border-top-left-radius: var(--border-radius);
+}
+.datagrid.with-rounded-top thead tr:first-child th:last-child {
+    border-top-right-radius: var(--border-radius);
 }
 
 .content-footer {
@@ -302,24 +328,102 @@ body.easyadmin-mobile-sidebar-visible .main-sidebar {
     padding: 15px 20px;
 }
 
-.content-body form {
+.content-panel {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow-lg);
+    margin-bottom: 20px;
+}
+
+.content-panel-header {
+    border-bottom: var(--border-width) var(--border-style) var(--border-color);
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+    font-size: var(--font-size-lg);
+    line-height: 24px;
+    margin: 0;
+    padding: 15px 17px 15px 20px;
+}
+.content-panel-header.collapsible {
+    padding: 0;
+}
+.content-panel-header.collapsible > a {
+    color: inherit;
+    display: block;
+    padding: 15px 17px 15px 20px;
+}
+.content-panel-header.collapsible.with-help > a {
+    padding: 15px 17px 1px 20px;
+}
+.content-panel-header.collapsible .collapse-icon {
+    color: var(--color-primary);
+    margin-right: 5px;
+    transition: all .1s linear;
+}
+.content-panel-collapse:not(.collapsed) .collapse-icon {
+    transform: rotate(90deg);
+}
+.content-panel-header.collapsible.with-help .content-panel-header-help {
+    padding: 0 17px 15px 20px;
+}
+
+.content-panel-header-help {
+    color: var(--gray-500);
+    font-size: var(--font-size-base);
+}
+
+.content-panel-body {
+    background: var(--white);
+    padding: 15px 20px;
+
+    @media(min-width: 1024px) {
+        padding: 18px 25px;
+    }
+
+    &.with-min-h-250 {
+        min-height: 250px;
+    }
+}
+.content-panel-body.with-background {
+    background: var(--content-panel-bg);
+}
+.content-panel-body.without-padding {
+    padding: 0;
+}
+.content-panel-body.without-header {
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+}
+.content-panel-body.without-footer {
     border-bottom-left-radius: var(--border-radius);
     border-bottom-right-radius: var(--border-radius);
 }
 
-.content-body table {
-    margin-bottom: 0;
+.content-panel-footer {
+    border-top: var(--border-width) var(--border-style) var(--border-color);
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+    margin: 0;
+    padding: 15px 17px 15px 20px;
+
+    &.without-border {
+        border-top: 0;
+    }
+}
+.content-panel-footer.without-padding {
+    padding: 0;
 }
 
-form .content-footer {
-    margin: 20px -20px -18px;
-}
 
 .list-pagination {
     align-items: center;
+    background: var(--table-footer-bg);
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    padding: 10px 17px 10px 20px;
 }
 
 .pager ul {
@@ -339,6 +443,9 @@ form .content-footer {
     cursor: not-allowed;
     z-index: 0;
 }
+.page-item.disabled .page-link {
+    background: transparent;
+}
 .pager .page-item i {
     vertical-align: middle;
 }
@@ -350,12 +457,7 @@ form .content-footer {
 
 .modal-footer {
     background: var(--white);
-}
-
-// Boolean labels (not switches/toggles)
-.boolean .label {
-    display: inline-block;
-    min-width: 33px;
+    padding: 8px 10px;
 }
 
 body.show .form-horizontal {
@@ -418,16 +520,15 @@ body.show .field-avatar .image-avatar {
 
 // Flash messages
 #flash-messages {
-    @media(min-width: 992px) {
-        // needed to compensate the content resizer handlers
-        margin-left: 10px;
-        margin-right: 10px;
-    }
+    background: transparent;
+    box-shadow: var(--box-shadow-lg);
+    margin: 0 0 20px;
 }
 .alert {
-    box-shadow: var(--box-shadow-lg);
-    margin-bottom: 15px;
-    padding-right: 48px;
+    border-width: 0 0 var(--border-width);
+    border-radius: 0;
+    margin: 0;
+    padding-right: 55px;
     position: relative;
 }
 .alert .alert-close {
@@ -439,8 +540,8 @@ body.show .field-avatar .image-avatar {
     font-weight: bold;
     line-height:1;
     opacity: 0.5;
-    padding: 0 3px;
+    padding: 0 0 0 3px;
     position: absolute;
-    right: 13px;
+    right: 30px;
     top: 9px;
 }

@@ -4,29 +4,33 @@ EasyAdmin
 EasyAdmin creates administration backends for your Symfony applications with
 unprecedented simplicity.
 
-<img src="https://raw.githubusercontent.com/EasyCorp/EasyAdminBundle/master/doc/images/easyadmin-promo.png" alt="Symfony Backends created with EasyAdmin" align="right" />
+![EasyAdmin Backend Screenshot](/doc/images/easyadmin-full-backend.png)
 
-* [Installation][1]
-* [Creating Your First Backend][2]
-* [Documentation][3]
+Installation
+------------
 
-**Features**
+EasyAdmin 3 requires PHP 7.2 or higher and Symfony 4.4 or higher. Run the
+following command to install it in your application:
 
-  * **CRUD** operations on Doctrine entities (create, edit, list, delete).
-  * Full-text **search**, **pagination** and column **sorting**.
-  * Supports Symfony 4.1 or higher
-  * Translated into tens of languages.
-  * **Fast**, **simple** and **smart** where appropriate.
+```
+$ composer require easycorp/easyadmin-bundle
+```
 
-**Requirements**
+Documentation
+-------------
 
-  * Symfony 4.1 or higher applications.
-  * Doctrine ORM entities (Doctrine ODM not supported).
-  * Entities with composite keys or using inheritance are not supported.
+Read [EasyAdmin Docs][1] at the official Symfony website.
 
-If your application uses a Symfony version older than 4.1, check out the
-[1.x version of this bundle](https://github.com/EasyCorp/EasyAdminBundle/tree/1.x)
-which is compatible with Symfony 2.x, 3.x and 4.x.
+Versions
+--------
+
+* [1.x version](https://github.com/EasyCorp/EasyAdminBundle/tree/1.x): no longer
+  maintained. Recommended only for legacy projects using a Symfony version prior to 4.1;
+* [2.x version](https://github.com/EasyCorp/EasyAdminBundle/tree/2.x): the legacy
+  version, which still fixes bugs but adds no new features. No longer recommended
+  for new Symfony projects;
+* [3.x version](https://github.com/EasyCorp/EasyAdminBundle/tree/master): the stable
+  version recommended for all projects.
 
 Demo Application
 ----------------
@@ -39,6 +43,4 @@ License
 
 This software is published under the [MIT License](LICENSE.md)
 
-[1]: https://symfony.com/doc/current/bundles/EasyAdminBundle/book/installation.html
-[2]: https://symfony.com/doc/current/bundles/EasyAdminBundle/book/your-first-backend.html
-[3]: https://symfony.com/doc/current/bundles/EasyAdminBundle
+[1]: https://symfony.com/doc/master/bundles/EasyAdminBundle/index.html

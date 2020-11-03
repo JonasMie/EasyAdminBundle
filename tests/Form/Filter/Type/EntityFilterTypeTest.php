@@ -3,11 +3,11 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Form\Filter\Type;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Parameter;
 use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\EntityFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
 use Symfony\Bridge\Doctrine\Form\DoctrineOrmExtension;
@@ -70,10 +70,10 @@ class EntityFilterTypeTest extends FilterTypeTest
         $this->assertTrue($form->isSynchronized());
 
         $filter = $this->filterRegistry->resolveType($form);
-        $filter->filter($this->qb, $form, ['property' => 'foo', 'dataType' => 'association', 'associationType' => ClassMetadata::TO_ONE]);
+        $filter->filter($this->qb, $form, ['field' => 'foo', 'dataType' => 'association', 'associationType' => ClassMetadata::TO_ONE]);
         $this->assertSame(static::FILTER_TYPE, \get_class($filter));
         $this->assertSame($dql, $this->qb->getDQL());
-        $this->assertEquals($params, $this->qb->getParameters()->toArray());
+        $this->assertSameDoctrineParams($params, $this->qb->getParameters()->toArray());
     }
 
     /**
@@ -92,10 +92,10 @@ class EntityFilterTypeTest extends FilterTypeTest
         $this->assertTrue($form->isSynchronized());
 
         $filter = $this->filterRegistry->resolveType($form);
-        $filter->filter($this->qb, $form, ['property' => 'foo', 'dataType' => 'association', 'associationType' => ClassMetadata::TO_MANY]);
+        $filter->filter($this->qb, $form, ['field' => 'foo', 'dataType' => 'association', 'associationType' => ClassMetadata::TO_MANY]);
         $this->assertSame(static::FILTER_TYPE, \get_class($filter));
         $this->assertSame($dql, $this->qb->getDQL());
-        $this->assertEquals($params, $this->qb->getParameters()->toArray());
+        $this->assertSameDoctrineParams($params, $this->qb->getParameters()->toArray());
     }
 
     public function getDataProviderToOneAssoc(): iterable
