@@ -18,7 +18,6 @@ use Symfony\Component\Yaml\Yaml;
  */
 class EasyAdminDataCollector extends DataCollector
 {
-    /** @var ConfigManager */
     private $configManager;
 
     public function __construct(ConfigManager $configManager)
@@ -43,7 +42,7 @@ class EasyAdminDataCollector extends DataCollector
     /**
      * {@inheritdoc}
      */
-    public function collect(Request $request, Response $response, \Exception $exception = null)
+    public function collect(Request $request, Response $response, \Throwable $exception = null)
     {
         if ('easyadmin' !== $request->attributes->get('_route')) {
             return;
@@ -61,12 +60,7 @@ class EasyAdminDataCollector extends DataCollector
         ];
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return array|null
-     */
-    private function getEasyAdminParameters(Request $request)
+    private function getEasyAdminParameters(Request $request): ?array
     {
         return [
             'action' => $request->query->get('action'),

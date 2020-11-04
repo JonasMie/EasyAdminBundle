@@ -16,12 +16,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class EasyAdminExtension extends AbstractTypeExtension
 {
-    /** @var RequestStack|null */
     private $requestStack;
 
-    /**
-     * @param RequestStack|null $requestStack
-     */
     public function __construct(RequestStack $requestStack = null)
     {
         $this->requestStack = $requestStack;
@@ -70,7 +66,7 @@ class EasyAdminExtension extends AbstractTypeExtension
     /**
      * {@inheritdoc}
      */
-    public static function getExtendedTypes()
+    public static function getExtendedTypes(): iterable
     {
         return [FormType::class];
     }

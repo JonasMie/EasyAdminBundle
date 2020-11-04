@@ -46,7 +46,7 @@ class EntityFilterTypeTest extends FilterTypeTest
         }
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
 
@@ -73,7 +73,7 @@ class EntityFilterTypeTest extends FilterTypeTest
         $filter->filter($this->qb, $form, ['property' => 'foo', 'dataType' => 'association', 'associationType' => ClassMetadata::TO_ONE]);
         $this->assertSame(static::FILTER_TYPE, \get_class($filter));
         $this->assertSame($dql, $this->qb->getDQL());
-        $this->assertEquals($params, $this->qb->getParameters()->toArray());
+        $this->assertSameDoctrineParams($params, $this->qb->getParameters()->toArray());
     }
 
     /**
@@ -95,7 +95,7 @@ class EntityFilterTypeTest extends FilterTypeTest
         $filter->filter($this->qb, $form, ['property' => 'foo', 'dataType' => 'association', 'associationType' => ClassMetadata::TO_MANY]);
         $this->assertSame(static::FILTER_TYPE, \get_class($filter));
         $this->assertSame($dql, $this->qb->getDQL());
-        $this->assertEquals($params, $this->qb->getParameters()->toArray());
+        $this->assertSameDoctrineParams($params, $this->qb->getParameters()->toArray());
     }
 
     public function getDataProviderToOneAssoc(): iterable
