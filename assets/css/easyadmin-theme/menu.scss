@@ -7,11 +7,15 @@
 }
 
 .sidebar-menu .header {
-    color: var(--text-muted);
+    color: var(--gray-600);
     font-size: 12px;
-    margin-top: 20px;
+    font-weight: 500;
+    margin-top: 15px;
     padding: 7px 5px 7px 0;
     text-transform: uppercase;
+}
+.sidebar-menu .header:first-child {
+    margin-top: 0px;
 }
 
 .sidebar-menu li {
@@ -22,14 +26,15 @@
     color: var(--text-color-dark);
     display: block;
     line-height: 20px;
-    padding: 4px 5px 10px 0;
+    padding: 4px 5px 8px 0;
 }
 
-.sidebar-menu .fa {
-    color: var(--text-color-dark);
+.sidebar-menu .menu-icon {
+    color: currentColor;
     filter: opacity(50%);
     font-size: 17px;
     margin-right: 4px;
+    vertical-align: text-bottom;
     width: 20px;
 }
 
@@ -39,7 +44,7 @@
 }
 
 .sidebar-menu li:not(.submenu-active).active a,
-.sidebar-menu li:not(.submenu-active).active .fa {
+.sidebar-menu li:not(.submenu-active).active .menu-icon {
     color: var(--color-primary);
     filter: opacity(100%);
 }
@@ -89,84 +94,84 @@
     transform: rotate(90deg);
 }
 
-body.easyadmin-sidebar-width-compact .main-sidebar {
+body.ea-sidebar-width-compact .main-sidebar {
     overflow: visible;
 
-    @media(min-width: 992px) {
+    @media(min-width: 1024px) {
         width: 24px;
     }
 }
 
-@media(min-width: 992px) {
-    body.easyadmin-sidebar-width-compact .sidebar-menu a {
+@media(min-width: 1024px) {
+    body.ea-sidebar-width-compact .sidebar-menu a {
         padding: 7px 5px 7px 0;
     }
 
-    body.easyadmin-sidebar-width-compact .sidebar-menu li span,
-    body.easyadmin-sidebar-width-compact .sidebar-menu li .treeview-icon {
+    body.ea-sidebar-width-compact .sidebar-menu li span,
+    body.ea-sidebar-width-compact .sidebar-menu li .treeview-icon {
         display: none;
     }
-    body.easyadmin-sidebar-width-compact .sidebar-menu li {
+    body.ea-sidebar-width-compact .sidebar-menu li {
         position: relative;
     }
-    body.easyadmin-sidebar-width-compact .sidebar-menu li:hover {
+    body.ea-sidebar-width-compact .sidebar-menu li:hover {
         background: var(--body-bg);
         border-radius: var(--border-radius);
-        width: var(--sidebar-width);
+        width: var(--sidebar-max-width);
         z-index: $zindex-modal-backdrop;
     }
 
-    .easyadmin-sidebar-width-compact .sidebar-menu li.header {
+    .ea-sidebar-width-compact .sidebar-menu li.header {
         height: 0;
         overflow: hidden;
         padding: 0;
         width: 0;
     }
 
-    body.easyadmin-sidebar-width-compact .sidebar-menu .treeview-menu li:hover {
+    body.ea-sidebar-width-compact .sidebar-menu .treeview-menu li:hover {
         width: unset;
     }
-    body.easyadmin-sidebar-width-compact .sidebar-menu li:hover span {
+    body.ea-sidebar-width-compact .sidebar-menu li:hover span {
         display: inline-block;
         left: 32px;
         position: absolute;
         top: 7px;
     }
 
-    body.easyadmin-sidebar-width-compact .sidebar-menu li:hover .treeview-menu a {
+    body.ea-sidebar-width-compact .sidebar-menu li:hover .treeview-menu a {
         padding: 3px 5px 3px 11px;
     }
-    body.easyadmin-sidebar-width-compact .sidebar-menu li:hover .treeview-menu span {
+    body.ea-sidebar-width-compact .sidebar-menu li:hover .treeview-menu span {
         position: static;
     }
-    body.easyadmin-sidebar-width-compact .sidebar-menu li .fa {
+    body.ea-sidebar-width-compact .sidebar-menu li .fa {
         font-size: 21px;
         width: 24px;
     }
-    body.easyadmin-sidebar-width-compact .sidebar-menu .treeview-menu li .fa {
+    body.ea-sidebar-width-compact .sidebar-menu .treeview-menu li .fa {
         font-size: var(--font-size-base);
         width: 16px;
     }
 
-    .easyadmin-sidebar-width-compact .sidebar-menu > li > .treeview-menu {
+    .ea-sidebar-width-compact .sidebar-menu > li > .treeview-menu {
         padding-top: 5px;
         padding-bottom: 5px;
         border-bottom-right-radius: 4px;
     }
-    .easyadmin-sidebar-width-compact .sidebar-menu > li > a > span,
-    .easyadmin-sidebar-width-compact .sidebar-menu > li > .treeview-menu {
+    .ea-sidebar-width-compact .sidebar-menu > li > a > span,
+    .ea-sidebar-width-compact .sidebar-menu > li > .treeview-menu {
         display: none !important;
     }
 
-    .easyadmin-sidebar-width-compact .sidebar-menu > li:hover > a > span,
-    .easyadmin-sidebar-width-compact .sidebar-menu > li:hover > .treeview-menu {
+    .ea-sidebar-width-compact .sidebar-menu > li:hover > a > span,
+    .ea-sidebar-width-compact .sidebar-menu > li:hover > .treeview-menu {
         background: var(--body-bg);
         display: block !important;
         position: absolute;
         left: 32px;
-        width: calc(var(--sidebar-width) - 32px);
+        width: calc(var(--sidebar-max-width) - 32px);
     }
-    .easyadmin-sidebar-width-compact .sidebar-menu > li:hover > .treeview-menu {
+    .ea-sidebar-width-compact .sidebar-menu > li:hover > .treeview-menu {
         top: 32px;
         margin-left: 0;
     }

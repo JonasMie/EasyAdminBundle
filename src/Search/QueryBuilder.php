@@ -2,20 +2,19 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Search;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 class QueryBuilder
 {
-    /** @var Registry */
     private $doctrine;
 
-    public function __construct(Registry $doctrine)
+    public function __construct(ManagerRegistry $doctrine)
     {
         $this->doctrine = $doctrine;
     }

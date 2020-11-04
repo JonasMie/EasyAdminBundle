@@ -135,6 +135,14 @@
                 <source>delete_modal.action</source>
                 <target>Supprimer</target>
             </trans-unit>
+            <trans-unit id="batch_action_modal.title">
+                <source>batch_action_modal.title</source>
+                <target>Vous allez appliquer l'action "%action_name%" à %num_items% élément(s).</target>
+            </trans-unit>
+            <trans-unit id="batch_action_modal.content">
+                <source>batch_action_modal.content</source>
+                <target>Cette action est irréversible.</target>
+            </trans-unit>
             <trans-unit id="action.add_new_item">
                 <source>action.add_new_item</source>
                 <target>Ajouter un nouvel élément</target>
@@ -288,6 +296,12 @@
             <trans-unit id="filter.label.is_before_or_same">
                 <source>filter.label.is_before_or_same</source>
                 <target>est antérieure à ou est le</target>
+            </trans-unit>
+
+            <!-- security -->
+            <trans-unit id="security.list.hidden_results">
+                <source>security.list.hidden_results</source>
+                <target>Certains résultats ne peuvent pas être affichés car vous n'avez pas la permission</target>
             </trans-unit>
         </body>
     </file>

@@ -135,6 +135,14 @@
                 <source>delete_modal.action</source>
                 <target>Delete</target>
             </trans-unit>
+            <trans-unit id="batch_action_modal.title">
+                <source>batch_action_modal.title</source>
+                <target>You are going to apply the "%action_name%" action to %num_items% item(s).</target>
+            </trans-unit>
+            <trans-unit id="batch_action_modal.content">
+                <source>batch_action_modal.content</source>
+                <target>You can't undo this action.</target>
+            </trans-unit>
             <trans-unit id="action.add_new_item">
                 <source>action.add_new_item</source>
                 <target>Add a new item</target>

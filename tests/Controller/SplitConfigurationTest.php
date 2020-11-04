@@ -6,9 +6,16 @@ use EasyCorp\Bundle\EasyAdminBundle\Tests\Fixtures\AbstractTestCase;
 
 class SplitConfigurationTest extends AbstractTestCase
 {
+    protected function setUp(): void
+    {
+        // ignore parent method
+    }
+
     public function testConfigurationInDifferentFiles()
     {
         $this->initClient(['environment' => 'split_configuration']);
+        $this->initDatabase();
+
         $backendConfig = static::$client->getContainer()->get('easyadmin.config.manager')->getBackendConfig();
 
         $this->assertSame(['Category', 'Product'], array_keys($backendConfig['entities']));
@@ -25,7 +32,7 @@ class SplitConfigurationTest extends AbstractTestCase
     public function testConfigurationErrorsInDifferentFiles()
     {
         $this->expectException('Symfony\Component\Config\Definition\Exception\InvalidConfigurationException');
-        $this->expectExceptionMessage('Invalid type for path "easy_admin.design.rtl". Expected boolean, but got integer.');
+        $this->expectExceptionMessageRegExp('/Invalid type for path "easy_admin.design.rtl". Expected ("bool"|boolean), but got ("int"|integer)./');
 
         $this->initClient(['environment' => 'split_configuration_error']);
     }

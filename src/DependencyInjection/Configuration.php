@@ -7,7 +7,13 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
- * Defines the configuration options of the bundle and validates its values.
+ * @deprecated
+ *
+ * This class is kept for backward-compatibility reasons. Otherwise, when installing EasyAdmin 3.0
+ * in an application using EasyAdmin 2.x, users will see a "Unrecognized option ..." error.
+ *
+ * Starting from EasyAdmin 3.0, this bundle no longer defines any traditional configuration option.
+ * Everything is configured via PHP code in classes.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
@@ -16,7 +22,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder('easy_admin');
-        $rootNode = $this->getRootNode($treeBuilder, 'easy_admin');
+        $rootNode = $treeBuilder->getRootNode();
 
         $this->addGlobalOptionsSection($rootNode);
         $this->addUserSection($rootNode);
@@ -243,7 +249,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('field_toggle')->info('Used to render toggle field types (a special type that display booleans as flip switches)')->end()
                                 ->scalarNode('field_url')->info('Used to render clickable URLs')->end()
                                 ->scalarNode('label_empty')->info('Used when the field to render is an empty collection')->end()
-                                ->scalarNode('label_inaccessible')->info('Used when is not possible to access the value of the field to render (there is no getter or public property)')->end()
+                                ->scalarNode('label_inaccessible')->info('Used when is not possible to access the value of the field to render (there is no getter or public field)')->end()
                                 ->scalarNode('label_null')->info('Used when the value of the field to render is null')->end()
                                 ->scalarNode('label_undefined')->info('Used when any kind of error or exception happens when trying to access the value of the field to render')->end()
                             ->end()
@@ -374,15 +380,5 @@ class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
         ;
-    }
-
-    private function getRootNode(TreeBuilder $treeBuilder, $name)
-    {
-        // BC layer for symfony/config 4.1 and older
-        if (!method_exists($treeBuilder, 'getRootNode')) {
-            return $treeBuilder->root($name);
-        }
-
-        return $treeBuilder->getRootNode();
     }
 }

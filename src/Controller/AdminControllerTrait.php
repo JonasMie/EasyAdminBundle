@@ -338,6 +338,10 @@ trait AdminControllerTrait
     {
         $this->dispatch(EasyAdminEvents::PRE_DELETE);
 
+        if (!Request::getHttpMethodParameterOverride() && 'POST' === $this->request->getMethod() && 'DELETE' === $this->request->request->get('_method')) {
+            $this->request->setMethod('DELETE');
+        }
+
         if ('DELETE' !== $this->request->getMethod()) {
             return $this->redirect($this->generateUrl('easyadmin', ['action' => 'list', 'entity' => $this->entity['name']]));
         }
@@ -597,9 +601,9 @@ trait AdminControllerTrait
 
         $this->get('easyadmin.property_accessor')->setValue($entity, $property, $value);
 
-        $this->dispatch(EasyAdminEvents::PRE_UPDATE, ['entity' => $entity, 'newValue' => $value]);
+        $this->dispatch(EasyAdminEvents::PRE_UPDATE, ['entity' => $entity, 'property' => $property, 'newValue' => $value]);
         $this->executeDynamicMethod('update<EntityName>Entity', [$entity]);
-        $this->dispatch(EasyAdminEvents::POST_UPDATE, ['entity' => $entity, 'newValue' => $value]);
+        $this->dispatch(EasyAdminEvents::POST_UPDATE, ['entity' => $entity, 'property' => $property, 'newValue' => $value]);
 
         $this->dispatch(EasyAdminEvents::POST_EDIT);
     }
@@ -827,10 +831,7 @@ trait AdminControllerTrait
         if (method_exists($this, $customMethodName = 'create'.$this->entity['name'].'EntityForm')) {
             $form = $this->{$customMethodName}($entity, $entityProperties, $view);
             if (!$form instanceof FormInterface) {
-                throw new \UnexpectedValueException(sprintf(
-                    'The "%s" method must return a FormInterface, "%s" given.',
-                    $customMethodName, \is_object($form) ? \get_class($form) : \gettype($form)
-                ));
+                throw new \UnexpectedValueException(sprintf('The "%s" method must return a FormInterface, "%s" given.', $customMethodName, \is_object($form) ? \get_class($form) : \gettype($form)));
             }
 
             return $form;
@@ -839,10 +840,7 @@ trait AdminControllerTrait
         $formBuilder = $this->executeDynamicMethod('create<EntityName>EntityFormBuilder', [$entity, $view]);
 
         if (!$formBuilder instanceof FormBuilderInterface) {
-            throw new \UnexpectedValueException(sprintf(
-                'The "%s" method must return a FormBuilderInterface, "%s" given.',
-                'createEntityForm', \is_object($formBuilder) ? \get_class($formBuilder) : \gettype($formBuilder)
-            ));
+            throw new \UnexpectedValueException(sprintf('The "%s" method must return a FormBuilderInterface, "%s" given.', 'createEntityForm', \is_object($formBuilder) ? \get_class($formBuilder) : \gettype($formBuilder)));
         }
 
         return $formBuilder->getForm();
@@ -908,7 +906,7 @@ trait AdminControllerTrait
         }
 
         if (!method_exists($this, $methodName)) {
-            throw new \BadMethodCallException(sprintf('The "%s()" method does not exist in the %s class', $methodName, \get_class($this)));
+            throw new \BadMethodCallException(sprintf('The "%s()" method does not exist in the %s class', $methodName, static::class));
         }
 
         return \call_user_func_array([$this, $methodName], $arguments);

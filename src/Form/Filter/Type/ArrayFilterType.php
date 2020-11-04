@@ -2,23 +2,19 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type;
 
-use Doctrine\ORM\Query\Expr;
-use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Form\ChoiceList\Loader\DynamicChoiceLoader;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class ArrayFilterType extends FilterType
+class ArrayFilterType extends AbstractType
 {
-    use FilterTypeTrait;
-
     /**
      * {@inheritdoc}
      */
@@ -68,31 +64,5 @@ class ArrayFilterType extends FilterType
     public function getParent(): string
     {
         return ComparisonFilterType::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function filter(QueryBuilder $queryBuilder, FormInterface $form, array $metadata)
-    {
-        $alias = current($queryBuilder->getRootAliases());
-        $property = $metadata['property'];
-        $useQuotes = 'simple_array' !== $metadata['dataType'];
-        $data = $form->getData();
-
-        if (null === $data['value'] || [] === $data['value']) {
-            $queryBuilder->andWhere(sprintf('%s.%s %s', $alias, $property, $data['comparison']));
-        } else {
-            $orX = new Expr\Orx();
-            foreach ($data['value'] as $value) {
-                $paramName = static::createAlias($property);
-                $orX->add(sprintf('%s.%s %s :%s', $alias, $property, $data['comparison'], $paramName));
-                $queryBuilder->setParameter($paramName, $useQuotes ? '%"'.$value.'"%' : '%'.$value.'%');
-            }
-            if (ComparisonType::NOT_CONTAINS === $data['comparison']) {
-                $orX->add(sprintf('%s.%s IS NULL', $alias, $property));
-            }
-            $queryBuilder->andWhere($orX);
-        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Router;
 
-use Doctrine\Common\Persistence\Proxy;
+use Doctrine\Persistence\Proxy;
 use EasyCorp\Bundle\EasyAdminBundle\Configuration\ConfigManager;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -14,13 +14,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 final class EasyAdminRouter
 {
-    /** @var ConfigManager */
     private $configManager;
-    /** @var UrlGeneratorInterface */
     private $urlGenerator;
-    /** @var PropertyAccessorInterface */
     private $propertyAccessor;
-    /** @var RequestStack|null */
     private $requestStack;
 
     public function __construct(ConfigManager $configManager, UrlGeneratorInterface $urlGenerator, PropertyAccessorInterface $propertyAccessor, RequestStack $requestStack = null)

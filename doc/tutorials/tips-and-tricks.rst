@@ -23,7 +23,7 @@ In addition to ``apc``, Doctrine metadata cache supports ``memcache``,
 ``memcached``, ``xcache`` and ``service`` (for using a custom cache service).
 Read the documentation about `Doctrine caching drivers`_.
 
-Note that the previous example configures metadata caching in ``config_prod.yml``
+Note that the previous example configures metadata caching in ``config_prod.yaml``
 file, which is the configuration used for the production environment. It's not
 recommended to enable this cache in the development environment to avoid having
 to clear APC cache or restart the web server whenever you make any change to
@@ -139,6 +139,87 @@ to your needs:
     {% if item.status != 'PUBLISHED' %}
         {{ include('@EasyAdmin/default/action.html.twig') }}
     {% endif %}
+
+Avoid Repeating Configuration using YAML Variables
+--------------------------------------------------
+
+Sometimes, certain blocks of YAML config are repeated in different places. For
+example, when filtering entities with ``dql_filter`` while displaying the same
+columns, you can end up with duplicated lines like:
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            VipCustomers:
+                class: App\Entity\User
+                label: 'VIP customers'
+                list:
+                    dql_filter: 'entity.budget > 100000'
+                    fields:
+                        - 'id'
+                        - 'email'
+                        - 'createdAt'
+                form:
+                    fields:
+                        - 'email'
+                search:
+                    fields: ['email']
+
+            RegularCustomers:
+                class: App\Entity\User
+                label: 'Regular customers'
+                list:
+                    dql_filter: 'entity.budget <= 100000'
+                    fields:
+                        - 'id'
+                        - 'email'
+                        - 'createdAt'
+                form:
+                    fields:
+                        - 'email'
+                search:
+                    fields: ['email']
+
+To avoid repetition, you can use "YAML variables", which are reusable blocks
+that use the following syntax: ``&foo`` creates a block named "foo" (this is
+like declaring a variable) and ``<<: *foo`` prints the content of the "foo"
+block (is like "echo" a variable):
+
+.. code-block:: yaml
+
+    # config/packages/easy_admin.yaml
+    easy_admin:
+        entities:
+            VipCustomers: &customer_template
+                class: App\Entity\User
+                label: 'VIP customers'
+                list:  &customer_list_template
+                    dql_filter: 'entity.budget > 100000'
+                    fields:
+                        - 'id'
+                        - 'email'
+                        - 'createdAt'
+                form:
+                    fields:
+                        - 'email'
+                search:
+                    fields: ['email']
+
+            # this entity reuses the config variables defined in the other
+            # entity, avoiding most repeated config
+            RegularCustomers:
+                <<: *customer_template
+                label: 'Regular customers' # Overwrite configuration above
+                list:
+                    <<: *customer_list_template
+                    dql_filter: 'entity.budget <= 100000'  # Overwrite configuration above
+
+The ``customer_list_template`` is used to avoid repeating ``fields``
+configuration several times, the ``fields`` configuration from ``VipCustomers``
+will be reused in ``RegularCustomers``, and the second ``dql_filter``
+configuration will overwrite the first one because of the merge strategy.
 
 .. _`Doctrine caching drivers`: https://symfony.com/doc/current/reference/configuration/doctrine.html#caching-drivers
 .. _`How to Work with the User's Locale`: https://symfony.com/doc/current/translation/locale.html

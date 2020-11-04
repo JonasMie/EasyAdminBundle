@@ -6,7 +6,7 @@
             'class': [attr.class|default(''), easyadmin.view ~ '-form']|join(' '),
             'data-view': easyadmin.view,
             'data-entity': easyadmin.entity.name,
-            'data-entity-id': attribute(value, easyadmin.entity.primary_key_field_name) ?? '',
+            'data-entity-id': easyadmin.view == 'new' ? null : (attribute(value, easyadmin.entity.primary_key_field_name) ?? ''),
         }) %}
     {% endif %}
 
@@ -462,7 +462,7 @@
                 {% endif %}
 
                 <div class="row">
-                    {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and field.vars.easyadmin.form_group == group_name) %}
+                    {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and field.vars.easyadmin.form_group == group_name and not field.rendered) %}
                         {% if not field.vars.easyadmin.form_tab or field.vars.easyadmin.form_tab == tab_name %}
                             <div class="col-{{ field.vars.easyadmin.field.columns|default('12') }} {{ field.vars.easyadmin.field.css_class|default('') }}">
                                 {{ form_row(field) }}
@@ -473,7 +473,7 @@
             </fieldset>
         </div>
     {% else %}
-        {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and (not field.vars.easyadmin.form_tab or field.vars.easyadmin.form_tab == tab_name)) %}
+        {% for field in form|filter(field => 'hidden' not in field.vars.block_prefixes and (not field.vars.easyadmin.form_tab or field.vars.easyadmin.form_tab == tab_name) and not field.rendered) %}
             <div class="col-{{ field.vars.easyadmin.field.columns|default('12') }} {{ field.vars.easyadmin.field.css_class|default('') }}">
                 {{ form_row(field) }}
             </div>
@@ -548,7 +548,7 @@
     {{ form_widget(form.ids) }}
     <button type="button" class="btn btn-link deselect-batch-button">{{ 'action.deselect'|trans(_trans_parameters, _translation_domain) }}</button>
     {% for action in batch_actions %}
-        <button type="submit" class="btn {{ action.css_class|default('btn-secondary') }}" title="{{ action.title|default('') is empty ? '' : action.title|trans(_trans_parameters) }}" name="{{ form.name.vars.full_name }}" value="{{ action.name }}">
+        <button type="submit" class="btn {{ action.css_class|default('btn-secondary') }} {% if action.ask_confirm %}batch-action-requires-confirmation{% endif %}" title="{{ action.title|default('') is empty ? '' : action.title|trans(_trans_parameters) }}" name="{{ form.name.vars.full_name }}" value="{{ action.name }}">
             {%- if action.icon %}<i class="fa fa-fw fa-{{ action.icon }}"></i> {% endif -%}
             {%- if action.label is defined and not action.label is empty -%}
                 {{ action.label|trans(_trans_parameters, _translation_domain) }}
@@ -633,8 +633,8 @@
 {% block easyadmin_fileupload_widget %}
     <div class="easyadmin-fileupload">
         <div class="input-group">
-            {% set placeholder = null %}
-            {% set title = null %}
+            {% set placeholder = '' %}
+            {% set title = '' %}
             {% set filesLabel = 'files'|trans({}, 'EasyAdminBundle') %}
             {% if currentFiles %}
                 {% if multiple %}
